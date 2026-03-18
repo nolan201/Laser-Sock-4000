@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laser Sock 4000 — Bob vs Zorg — Ultra Chaos Edition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root{--g:#00ff88;--r:#ff3355;--y:#ffe033;--b:#00cfff;--p:#cc44ff;--o:#ff8800;--bg:#050d12;--panel:#071820;--border:#0f3a4a;--tx:#c8f0ff;--dim:#4a7a90}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(255,255,255,.6) 0%,transparent 100%),radial-gradient(1px 1px at 30% 65%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 50% 10%,rgba(255,255,255,.7) 0%,transparent 100%),radial-gradient(1px 1px at 70% 80%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(1px 1px at 85% 40%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 20% 90%,rgba(0,207,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 92% 15%,rgba(0,255,136,.3) 0%,transparent 100%),radial-gradient(1px 1px at 45% 55%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 60% 30%,rgba(204,68,255,.3) 0%,transparent 100%);pointer-events:none;z-index:0;animation:twinkle 4s ease-in-out infinite alternate}
+@keyframes twinkle{from{opacity:.7}to{opacity:1}}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:9999}
+#app{position:relative;z-index:1;width:100%;max-width:740px;padding:12px;max-height:100vh;overflow-y:auto}
+#app::-webkit-scrollbar{width:4px}
+#app::-webkit-scrollbar-thumb{background:var(--border)}
+.screen{display:none;animation:fadeIn .25s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:20px;box-shadow:0 0 40px rgba(0,207,255,.06),inset 0 0 60px rgba(0,0,0,.4);position:relative}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--b),transparent)}
+.title{font-family:'Orbitron',sans-serif;font-size:clamp(18px,4vw,36px);font-weight:900;text-align:center;color:var(--g);text-shadow:0 0 20px rgba(0,255,136,.8);letter-spacing:4px;animation:glow 2s ease-in-out infinite alternate}
+.title.red{color:var(--r);text-shadow:0 0 20px rgba(255,51,85,.8);animation:glowred 1s ease-in-out infinite alternate}
+.title.yellow{color:var(--y);text-shadow:0 0 20px rgba(255,224,51,.8)}
+@keyframes glow{from{text-shadow:0 0 15px rgba(0,255,136,.5)}to{text-shadow:0 0 30px rgba(0,255,136,1),0 0 60px rgba(0,255,136,.4)}}
+@keyframes glowred{from{text-shadow:0 0 10px rgba(255,51,85,.5)}to{text-shadow:0 0 30px rgba(255,51,85,1),0 0 50px rgba(255,51,85,.4)}}
+.sub{text-align:center;color:var(--dim);font-size:10px;letter-spacing:3px;margin-top:3px}
+hr{border:none;border-top:1px solid var(--border);margin:14px 0}
+.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.hud.hud2{grid-template-columns:1fr 1fr}
+.hud.hud4{grid-template-columns:repeat(4,1fr)}
+.hbox{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:3px;padding:7px 10px}
+.hlbl{font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase}
+.hval{font-size:15px;color:var(--g);font-family:'Orbitron',sans-serif;font-weight:700}
+.hval.danger{color:var(--r);animation:blink .5s step-end infinite}
+.hval.warn{color:var(--y)}
+.hval.blue{color:var(--b)}
+.hval.purple{color:var(--p)}
+@keyframes blink{50%{opacity:.3}}
+.barwrap{margin:5px 0}
+.barlbl{font-size:9px;letter-spacing:1px;color:var(--dim);margin-bottom:3px}
+.bartrack{height:13px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:2px;overflow:hidden}
+.barfill{height:100%;border-radius:1px;transition:width .35s ease;position:relative}
+.barfill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:shimmer 2s linear infinite}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.shields .barfill{background:linear-gradient(90deg,#0088cc,#00cfff);box-shadow:0 0 8px rgba(0,207,255,.5)}
+.enemy .barfill{background:linear-gradient(90deg,#cc0022,#ff3355);box-shadow:0 0 8px rgba(255,51,85,.5)}
+.boss .barfill{background:linear-gradient(90deg,#880022,#ff0044);box-shadow:0 0 14px rgba(255,0,68,.7)}
+.combo .barfill{background:linear-gradient(90deg,#8800cc,#cc44ff);box-shadow:0 0 8px rgba(204,68,255,.5)}
+.wavebanner{text-align:center;padding:9px;background:rgba(0,207,255,.04);border:1px solid rgba(0,207,255,.18);border-radius:3px;margin:10px 0}
+.wavenum{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--b);letter-spacing:3px}
+.wavename{font-size:12px;color:var(--y);margin-top:2px}
+.btn{padding:11px 14px;border:1px solid;border-radius:3px;background:rgba(0,0,0,.5);font-family:'Share Tech Mono',monospace;font-size:12px;cursor:pointer;transition:all .12s ease;letter-spacing:1px;text-align:left;position:relative;overflow:hidden;width:100%}
+.btn::before{content:'';position:absolute;inset:0;background:currentColor;opacity:0;transition:opacity .12s}
+.btn:hover::before{opacity:.08}
+.btn:active::before{opacity:.16}
+.btn:active{transform:scale(.98)}
+.green{border-color:var(--g);color:var(--g)}.green:hover{box-shadow:0 0 16px rgba(0,255,136,.3)}
+.blue{border-color:var(--b);color:var(--b)}.blue:hover{box-shadow:0 0 16px rgba(0,207,255,.3)}
+.yellow{border-color:var(--y);color:var(--y)}.yellow:hover{box-shadow:0 0 16px rgba(255,224,51,.3)}
+.red{border-color:var(--r);color:var(--r)}.red:hover{box-shadow:0 0 16px rgba(255,51,85,.3)}
+.purple{border-color:var(--p);color:var(--p)}.purple:hover{box-shadow:0 0 16px rgba(204,68,255,.3)}
+.orange{border-color:var(--o);color:var(--o)}.orange:hover{box-shadow:0 0 16px rgba(255,136,0,.3)}
+.dim{border-color:var(--dim);color:var(--dim)}
+.bkey{display:inline-block;background:rgba(255,255,255,.08);border-radius:2px;padding:0 5px;font-size:10px;margin-right:5px}
+.bsub{display:block;font-size:10px;opacity:.55;margin-top:2px}
+.grid1{display:grid;gap:7px;margin-top:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:10px}
+.log{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:3px;padding:12px;font-size:11px;line-height:1.9;min-height:70px;max-height:190px;overflow-y:auto;margin:10px 0}
+.log::-webkit-scrollbar{width:3px}
+.log::-webkit-scrollbar-thumb{background:var(--border)}
+.lline{margin:1px 0}
+.lline.good{color:var(--g)}.lline.bad{color:var(--r)}.lline.warn{color:var(--y)}.lline.info{color:var(--b)}.lline.funny{color:var(--p)}.lline.bob{color:var(--o)}.lline.crit{color:#fff;font-weight:bold;text-shadow:0 0 8px var(--y)}.lline.event{color:var(--p);border-left:2px solid var(--p);padding-left:6px}
+.srow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+.srow:last-child{border:none}
+.skey{color:var(--dim)}.sval{color:var(--g);font-family:'Orbitron',sans-serif}
+.sval.hi{color:var(--y);text-shadow:0 0 10px rgba(255,224,51,.6)}
+.sval.rec{color:var(--p);text-shadow:0 0 10px rgba(204,68,255,.6)}
+.input{width:100%;padding:11px 14px;background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:3px;color:var(--g);font-family:'Share Tech Mono',monospace;font-size:15px;outline:none;transition:border-color .2s;margin:8px 0}
+.input:focus{border-color:var(--g);box-shadow:0 0 12px rgba(0,255,136,.2)}
+.input::placeholder{color:var(--dim)}
+.mtext{background:rgba(0,0,0,.4);border-left:2px solid var(--b);padding:11px 14px;font-size:11px;line-height:1.95;border-radius:0 3px 3px 0;margin:10px 0}
+.sec{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin:12px 0 7px}
+.enrage{background:rgba(255,51,85,.08);border:1px solid rgba(255,51,85,.35);border-radius:3px;padding:7px;text-align:center;color:var(--r);font-size:11px;animation:blink 1s step-end infinite;margin:7px 0}
+.phase3{background:rgba(204,68,255,.08);border:1px solid rgba(204,68,255,.35);border-radius:3px;padding:7px;text-align:center;color:var(--p);font-size:11px;animation:blink .7s step-end infinite;margin:7px 0}
+.eventbox{background:rgba(204,68,255,.07);border:1px solid rgba(204,68,255,.3);border-radius:3px;padding:10px;font-size:11px;margin:10px 0;line-height:1.8}
+.lucky{border-color:rgba(0,255,136,.4);background:rgba(0,255,136,.05);color:var(--g)}
+.curse{border-color:rgba(255,51,85,.4);background:rgba(255,51,85,.05);color:var(--r)}
+.comboflash{animation:comboflash .4s ease}
+@keyframes comboflash{0%{transform:scale(1)}50%{transform:scale(1.15);color:#fff}100%{transform:scale(1)}}
+.tc{text-align:center}.mt8{margin-top:8px}.mt14{margin-top:14px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- TITLE -->
+<div id="s-title" class="screen active">
+<div class="panel">
+  <div class="title">LASER SOCK 4000</div>
+  <div class="sub">★ BOB VS ZORG — ULTRA CHAOS EDITION ★</div>
+  <hr>
+  <div class="hud hud2">
+    <div class="hbox"><div class="hlbl">All-Time High Score</div><div class="hval" id="t-hs">0</div></div>
+    <div class="hbox"><div class="hlbl">Best Speedrun</div><div class="hval blue" id="t-sr">--:--</div></div>
+  </div>
+  <div class="sec">— Select Mission Mode —</div>
+  <div class="grid1">
+    <button class="btn green" onclick="selMode('arcade')"><span class="bkey">1</span> ARCADE MODE<span class="bsub">5 waves + Emperor Zorg · Max score · New: crits, combos, events</span></button>
+    <button class="btn blue" onclick="selMode('speedrun')"><span class="bkey">2</span> SPEEDRUN MODE<span class="bsub">Beat Zorg as fast as possible · Timer counts every second</span></button>
+    <button class="btn purple" onclick="selMode('endless')"><span class="bkey">3</span> ENDLESS MODE<span class="bsub">Survive infinite waves · How far can you go?</span></button>
+  </div>
+  <div class="grid2 mt8">
+    <button class="btn yellow" onclick="show('s-hof')"><span class="bkey">4</span> HALL OF FAME</button>
+    <button class="btn dim" onclick="exitGame()"><span class="bkey">5</span> EXIT GAME</button>
+  </div>
+</div>
+</div>
+
+<!-- NAME -->
+<div id="s-name" class="screen">
+<div class="panel">
+  <div class="title" style="font-size:18px">PILOT REGISTRATION</div>
+  <div class="mtext">
+    <b style="color:var(--g)">Mission Intel:</b><br>
+    Ship: <span style="color:var(--g)">USS Ridiculous</span> (formerly a school bus)<br>
+    Weapon: <span style="color:var(--y)">Plasma Banana Cannon Mk.1</span> (don't ask)<br>
+    Co-pilot: <span style="color:var(--o)">Bob</span> — certified in "trying really hard"<br>
+    Coffee: <span style="color:var(--r)">Decaf.</span> War is absolute hell.<br><br>
+    <b style="color:var(--p)">NEW THIS EDITION:</b> Critical Hits · Combos · Lucky Events · Curses · Call Bob · Boss Phase 3
+  </div>
+  <div class="sec">— Enter Pilot Name —</div>
+  <input type="text" id="name-in" class="input" placeholder="AceCommander" maxlength="20">
+  <div class="grid2 mt8">
+    <button class="btn green" style="text-align:center;padding:14px" onclick="confirmName()">ENGAGE MISSION</button>
+    <button class="btn dim" style="text-align:center;padding:14px" onclick="show('s-title')">BACK</button>
+  </div>
+</div>
+</div>
+
+<!-- WAVE -->
+<div id="s-wave" class="screen">
+<div class="panel">
+  <div class="hud hud4">
+    <div class="hbox"><div class="hlbl">Pilot</div><div class="hval" style="font-size:12px" id="h-pilot">---</div></div>
+    <div class="hbox"><div class="hlbl">Score</div><div class="hval" id="h-score">0</div></div>
+    <div class="hbox"><div class="hlbl">Lives</div><div class="hval" id="h-lives">3</div></div>
+    <div class="hbox"><div class="hlbl">Time</div><div class="hval blue" id="h-time">00:00</div></div>
+  </div>
+  <div class="hud">
+    <div class="hbox"><div class="hlbl">Weapon Lvl</div><div class="hval yellow" id="h-wpn">1</div></div>
+    <div class="hbox"><div class="hlbl">Total Kills</div><div class="hval" id="h-kills">0</div></div>
+    <div class="hbox"><div class="hlbl">Combo</div><div class="hval purple" id="h-combo">x0</div></div>
+  </div>
+  <div class="barwrap shields"><div class="barlbl">SHIELDS</div><div class="bartrack"><div class="barfill" id="b-shields" style="width:100%"></div></div></div>
+  <div class="barwrap enemy"><div class="barlbl">ENEMIES</div><div class="bartrack"><div class="barfill" id="b-enemies" style="width:100%"></div></div></div>
+  <div class="barwrap combo" style="opacity:.7"><div class="barlbl">COMBO METER</div><div class="bartrack"><div class="barfill" id="b-combo" style="width:0%"></div></div></div>
+  <div id="wave-event" class="eventbox" style="display:none"></div>
+  <div class="wavebanner">
+    <div class="wavenum" id="w-label">WAVE 1</div>
+    <div class="wavename" id="w-name">Loading...</div>
+  </div>
+  <div class="log" id="log-wave"></div>
+  <div class="sec">— Choose Action —</div>
+  <div class="grid2">
+    <button class="btn green" onclick="act(1)"><span class="bkey">1</span> PLASMA CANNON<span class="bsub" id="b-plasma">8–20 dmg · crit chance</span></button>
+    <button class="btn yellow" onclick="act(2)"><span class="bkey">2</span> SPIN ATTACK<span class="bsub" id="b-spin">0–40 dmg · stun chance</span></button>
+    <button class="btn blue" onclick="act(3)"><span class="bkey">3</span> BOOST SHIELDS<span class="bsub">Bob duct-tapes hull +25</span></button>
+    <button class="btn purple" onclick="act(4)"><span class="bkey">4</span> OVERCLOCK<span class="bsub">Upgrade weapon level</span></button>
+    <button class="btn dim" onclick="act(5)"><span class="bkey">5</span> DODGE<span class="bsub">Barrel roll of shame</span></button>
+    <button class="btn orange" onclick="act(6)"><span class="bkey">6</span> CALL BOB<span class="bsub">random: kills / lives / weapon / shields / score / oops</span></button>
+  </div>
+  <button class="btn red mt8" onclick="goMenu()"><span class="bkey">0</span> ABANDON MISSION</button>
+</div>
+</div>
+
+<!-- UPGRADE -->
+<div id="s-upg" class="screen">
+<div class="panel">
+  <div class="title yellow" style="font-size:20px">WAVE CLEARED!</div>
+  <div id="upg-sum" class="mtext"></div>
+  <div class="sec">— Choose Upgrade —</div>
+  <div class="grid2">
+    <button class="btn green" onclick="upg(1)"><span class="bkey">1</span> EXTRA LIFE<span class="bsub" id="u-life"></span></button>
+    <button class="btn yellow" onclick="upg(2)"><span class="bkey">2</span> UPGRADE WEAPON<span class="bsub" id="u-wpn"></span></button>
+    <button class="btn blue" onclick="upg(3)"><span class="bkey">3</span> SHIELD REPAIR<span class="bsub">Full shields → 100</span></button>
+    <button class="btn purple" onclick="upg(4)"><span class="bkey">4</span> SCORE SURGE<span class="bsub" id="u-score"></span></button>
+    <button class="btn orange" onclick="upg(5)"><span class="bkey">5</span> BOB'S MYSTERY BOX<span class="bsub">random upgrade — great or disaster, no refunds</span></button>
+    <button class="btn dim" onclick="goMenu()"><span class="bkey">0</span> Return to Menu</button>
+  </div>
+</div>
+</div>
+
+<!-- BOSS -->
+<div id="s-boss" class="screen">
+<div class="panel">
+  <div class="title red">⚡ EMPEROR ZORG ⚡</div>
+  <div class="sub">DREADNOUGHT SUPREME ULTRA OMEGA X · WITH CUPHOLDERS</div>
+  <div id="b-enrage" class="enrage" style="display:none">*** ZORG TOOK OFF HIS SOCKS — GERALD & KEVIN ARE NOW WEAPONS ***</div>
+  <div id="b-phase3" class="phase3" style="display:none">*** ZORG IS CRYING AND FIGHTING — HE IS CALLING HIS MUM ***</div>
+  <div class="hud">
+    <div class="hbox"><div class="hlbl">Score</div><div class="hval" id="bs-score">0</div></div>
+    <div class="hbox"><div class="hlbl">Lives</div><div class="hval" id="bs-lives">3</div></div>
+    <div class="hbox"><div class="hlbl">Weapon</div><div class="hval yellow" id="bs-wpn">1</div></div>
+  </div>
+  <div class="barwrap shields"><div class="barlbl">YOUR SHIELDS</div><div class="bartrack"><div class="barfill" id="b-bshields" style="width:100%"></div></div></div>
+  <div class="barwrap boss"><div class="barlbl">EMPEROR ZORG HP</div><div class="bartrack"><div class="barfill" id="b-bosshp" style="width:100%"></div></div></div>
+  <div class="log" id="log-boss"></div>
+  <div class="sec">— Choose Action —</div>
+  <div class="grid2">
+    <button class="btn green" onclick="bact(1)"><span class="bkey">1</span> PLASMA VOLLEY<span class="bsub">Big damage · crit chance</span></button>
+    <button class="btn yellow" onclick="bact(2)"><span class="bkey">2</span> CHAOS VORTEX<span class="bsub">Pure random chaos (8 outcomes!)</span></button>
+    <button class="btn blue" onclick="bact(3)"><span class="bkey">3</span> EMERGENCY REPAIR<span class="bsub">Restore 30 shields</span></button>
+    <button class="btn purple" onclick="bact(4)"><span class="bkey">4</span> OFFER COFFEE<span class="bsub">Decaf is risky...</span></button>
+    <button class="btn orange" onclick="bact(5)"><span class="bkey">5</span> DEPLOY BOB<span class="bsub">Bob vs Zorg — wild card</span></button>
+    <button class="btn dim" onclick="goMenu()"><span class="bkey">0</span> Retreat</button>
+  </div>
+</div>
+</div>
+
+<!-- GAME OVER -->
+<div id="s-over" class="screen">
+<div class="panel">
+  <div class="title red" style="font-size:26px">GAME OVER</div>
+  <div id="go-zmsg" class="tc mt8" style="color:var(--dim);font-size:11px"></div>
+  <div id="go-stats" class="mt14"></div>
+  <div class="grid2 mt14">
+    <button class="btn green" style="text-align:center;padding:14px" onclick="show('s-title');refreshTitle()">PLAY AGAIN</button>
+    <button class="btn dim" style="text-align:center;padding:14px" onclick="exitGame()">QUIT</button>
+  </div>
+</div>
+</div>
+
+<!-- VICTORY -->
+<div id="s-win" class="screen">
+<div class="panel">
+  <div class="title yellow" style="font-size:22px">VICTORY!</div>
+  <div class="sub">EMPEROR ZORG HAS BEEN DEFEATED</div>
+  <div id="win-stats" class="mt14"></div>
+  <div class="grid2 mt14">
+    <button class="btn green" style="text-align:center;padding:14px" onclick="show('s-title');refreshTitle()">PLAY AGAIN</button>
+    <button class="btn yellow" style="text-align:center;padding:14px" onclick="show('s-hof')">HALL OF FAME</button>
+  </div>
+</div>
+</div>
+
+<!-- HOF -->
+<div id="s-hof" class="screen">
+<div class="panel">
+  <div class="title yellow" style="font-size:20px">HALL OF FAME</div>
+  <div class="sub">Zorg's personal best: 0.0s — He cheated. He always cheats.</div>
+  <hr>
+  <div id="hof-data"></div>
+  <button class="btn dim mt14" style="width:100%;text-align:center" onclick="show('s-title')">← BACK TO MENU</button>
+</div>
+</div>
+
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────
+let G = {
+  name:'Commander', score:0, hs:0, wave:1, lives:3,
+  shields:100, wpn:1, kills:0, combo:0, mode:'arcade',
+  t0:null, timer:null, sr:99999,
+  en:0, maxEn:0, enHP:0, enDmg:0,
+  bHP:0, bMax:0, bPhase:1
+};
+
+const WAVES = [
+  "Confused Zorg Scouts (brought the wrong map AND wrong galaxy)",
+  "Angry Space Chickens (buk buk AVENGE ME)",
+  "Mutant Pizza Drones (30 mins or your PLANET gets it)",
+  "Existentially Depressed Cyborgs (fighting AND crying simultaneously)",
+  "Caffeinated Laser Crabs (12 espressos, 8 claws, zero chill)",
+  "Disco Vampire Aliens (they bite AND they do the worm)",
+  "Time-Travelling Space Corgis (from year 3000 BC, very confused)",
+  "Rocket-Powered Space Accountants (SPREADSHEETS OF DOOM)",
+  "Interdimensional Sock Thieves (every sock. ALL of them. gone.)",
+  "Elite Zorg Death Squad (Zorg's mum packed extra sandwiches)",
+  "Philosophical Space Snails (slow but DEEPLY opinionated)",
+  "Rogue AI Toasters (they want bread, they want BLOOD)",
+  "Alien Influencers (filming everything, very annoying)",
+  "Sentient Tax Forms (you owe back-taxes to 3 galaxies)",
+  "THE ZORG FAN CLUB (they have merchandise. It's disturbingly good.)"
+];
+
+const TAUNTS = [
+  "Zorg: \"Is that the best you've got? My gran hits harder.\"",
+  "Zorg: \"I'm literally reading a magazine right now. So bored.\"",
+  "Zorg: \"My dental plan is better than yours AND I have laser socks.\"",
+  "Zorg: \"I conquered an IKEA. IN ONE AFTERNOON. Fear me.\"",
+  "Zorg: \"My mum said I could be anything. I chose galactic tyrant.\"",
+  "Zorg: \"Are you even trying? Gerald is YAWNING.\"",
+  "Zorg: \"I just ordered a pizza. ETA 30 mins. I'll defeat you by then.\"",
+  "Zorg: \"My ship has CUPHOLDERS. Yours has Bob. Ha.\"",
+  "Zorg: \"I once stared at a black hole until it blinked first.\"",
+  "Zorg: \"Fun fact: your ship is called USS RIDICULOUS. Just saying.\""
+];
+
+const BOBS = [
+  "Bob: \"I fixed the engine! ...with a sandwich. It's holding.\"",
+  "Bob: \"Quick question — is it normal for the hull to make that noise?\"",
+  "Bob: \"My CV says 'experienced engineer'. I may have exaggerated slightly.\"",
+  "Bob: \"I superglued the shield generator. Don't sneeze near it.\"",
+  "Bob: \"Good news: I stopped the leak! Bad news: with my hand.\"",
+  "Bob: \"The warning lights are still on but I covered them with tape.\"",
+  "Bob: \"I took an online course in spaceship repair. It was 20 minutes.\"",
+  "Bob: \"Commander, on a scale of 1-10 how worried should I be?\"",
+  "Bob: \"Found a spare life pod! ...I'm keeping it. Sorry.\"",
+  "Bob: \"I've written my will. I left you my socket wrench.\""
+];
+
+// ── UTILS ──────────────────────────────────────────────────
+const rnd = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+const ft = s => s>=99999?'--:--':`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+const el = () => G.t0 ? Math.floor((Date.now()-G.t0)/1000) : 0;
+const taunt = () => TAUNTS[rnd(0,TAUNTS.length-1)];
+const bob = () => BOBS[rnd(0,BOBS.length-1)];
+const pick = arr => arr[rnd(0,arr.length-1)];
+
+function load(){G.hs=+localStorage.getItem('sb3hs')||0;G.sr=+localStorage.getItem('sb3sr')||99999;}
+function save(){localStorage.setItem('sb3hs',G.hs);localStorage.setItem('sb3sr',G.sr);}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='s-hof')renderHOF();
+}
+function refreshTitle(){
+  document.getElementById('t-hs').textContent=G.hs;
+  document.getElementById('t-sr').textContent=G.sr<99999?ft(G.sr):'--:--';
+}
+function stopTimer(){if(G.timer){clearInterval(G.timer);G.timer=null;}}
+function log(msg,type='default',lid='log-wave'){
+  const el=document.getElementById(lid);
+  const d=document.createElement('div');
+  d.className='lline '+type;
+  d.textContent='> '+msg;
+  el.appendChild(d);
+  el.scrollTop=el.scrollHeight;
+}
+function clearLog(lid='log-wave'){document.getElementById(lid).innerHTML='';}
+
+function updateHUD(){
+  document.getElementById('h-pilot').textContent=G.name;
+  document.getElementById('h-score').textContent=G.score;
+  const lv=document.getElementById('h-lives');
+  lv.textContent=G.lives;
+  lv.className='hval'+(G.lives<=1?' danger':G.lives<=2?' warn':'');
+  document.getElementById('h-wpn').textContent=G.wpn;
+  document.getElementById('h-kills').textContent=G.kills;
+  const cb=document.getElementById('h-combo');
+  cb.textContent='x'+G.combo;
+  if(G.combo>=5)cb.className='hval purple comboflash';
+  else cb.className='hval purple';
+  document.getElementById('b-shields').style.width=Math.max(0,G.shields)+'%';
+  document.getElementById('b-enemies').style.width=(G.maxEn>0?(G.en/G.maxEn)*100:0)+'%';
+  document.getElementById('b-combo').style.width=Math.min(100,(G.combo/10)*100)+'%';
+  document.getElementById('b-plasma').textContent=`${8*G.wpn}–${20*G.wpn} dmg · crit chance`;
+  document.getElementById('b-spin').textContent=`0–${40*G.wpn} dmg · stun`;
+}
+
+function updateBossHUD(){
+  document.getElementById('bs-score').textContent=G.score;
+  const bl=document.getElementById('bs-lives');
+  bl.textContent=G.lives;
+  bl.className='hval'+(G.lives<=1?' danger':G.lives<=2?' warn':'');
+  document.getElementById('bs-wpn').textContent=G.wpn;
+  document.getElementById('b-bshields').style.width=Math.max(0,G.shields)+'%';
+  document.getElementById('b-bosshp').style.width=(G.bMax>0?Math.max(0,G.bHP/G.bMax)*100:0)+'%';
+  if(G.bHP<G.bMax/2){G.bPhase=2;document.getElementById('b-enrage').style.display='block';}
+  if(G.bHP<G.bMax/4){G.bPhase=3;document.getElementById('b-phase3').style.display='block';}
+}
+
+// ── TITLE / NAME ────────────────────────────────────────────
+function selMode(m){G.mode=m;show('s-name');setTimeout(()=>document.getElementById('name-in').focus(),200);}
+document.getElementById('name-in').addEventListener('keydown',e=>{if(e.key==='Enter')confirmName();});
+function confirmName(){
+  G.name=document.getElementById('name-in').value.trim()||'Anonymous';
+  startGame();
+}
+
+// ── LUCKY / CURSE EVENTS ────────────────────────────────────
+function luckyEvent(){
+  const roll=rnd(1,6);
+  let msg='';
+  if(roll===1){G.score+=500;msg='LUCKY EVENT! Went viral on GalacticTube! +500 pts!';}
+  else if(roll===2){G.shields=100;msg='LUCKY EVENT! A repair drone fixed shields for free! Full charge!';}
+  else if(roll===3){G.wpn++;msg='LUCKY EVENT! You sat on the overclock button. Weapon leveled up!';}
+  else if(roll===4){G.lives++;msg='LUCKY EVENT! Bob found an extra life behind the radiator!';}
+  else if(roll===5){G.score+=1000;msg='LUCKY EVENT! Galactic Lottery picked your number! +1000 pts!';}
+  else{G.shields=Math.min(100,G.shields+50);msg='LUCKY EVENT! Bob accidentally welded something useful. +50 shields!';}
+  return msg;
+}
+function curseEvent(){
+  const roll=rnd(1,5);
+  let msg='';
+  if(roll===1){G.shields=Math.max(0,G.shields-20);msg='CURSE! A space seagull hit the shield emitter. -20 shields!';}
+  else if(roll===2){G.score=Math.max(0,G.score-100);msg='CURSE! Bob filed a tax return on your behalf. -100 pts in fees!';}
+  else if(roll===3){msg='CURSE! Zorg hacked your coffee machine. Now only decaf. You weep.';}
+  else if(roll===4){G.wpn=Math.max(1,G.wpn-1);msg='CURSE! Bob sneezed on the weapon controls. Weapon downgraded!';}
+  else{G.shields=Math.max(0,G.shields-30);msg='CURSE! Your ship hit a rogue shopping cart in space. -30 shields!';}
+  return msg;
+}
+
+// ── GAME START ──────────────────────────────────────────────
+function startGame(){
+  G.score=0;G.wave=1;G.lives=3;G.shields=100;G.wpn=1;G.kills=0;G.combo=0;
+  G.t0=Date.now();
+  stopTimer();
+  G.timer=setInterval(()=>{document.getElementById('h-time').textContent=ft(el());},1000);
+  startWave();
+}
+
+// ── WAVE ────────────────────────────────────────────────────
+function startWave(){
+  G.maxEn=5+G.wave*3; G.en=G.maxEn;
+  G.enHP=40+G.wave*20; G.enDmg=12+G.wave*6;
+  const name=WAVES[(G.wave-1)%WAVES.length];
+  document.getElementById('w-label').textContent=`WAVE ${G.wave} — ${G.mode.toUpperCase()}`;
+  document.getElementById('w-name').textContent=name;
+  clearLog(); updateHUD();
+
+  // Wave start random event
+  const evbox=document.getElementById('wave-event');
+  const evroll=rnd(1,4);
+  if(evroll===1){
+    const msg=luckyEvent();
+    evbox.style.display='block';
+    evbox.className='eventbox lucky';
+    evbox.textContent='⚡ '+msg;
+    log(msg,'event');
+  } else if(evroll===2){
+    const msg=curseEvent();
+    evbox.style.display='block';
+    evbox.className='eventbox curse';
+    evbox.textContent='💀 '+msg;
+    log(msg,'bad');
+  } else {
+    evbox.style.display='none';
+  }
+
+  log(`Wave ${G.wave} — ${G.maxEn} enemies incoming.`,'warn');
+  log(name,'info');
+  show('s-wave');
+}
+
+function shieldHit(dmg, lid='log-wave'){
+  G.shields-=dmg;
+  if(G.shields<0){G.lives--;G.shields=100;log(`SHIELDS BLOWN! Lost a life! Lives: ${G.lives}`,'bad',lid);if(G.lives<=0)return false;}
+  else{log(`Enemy fire: ${dmg} shield damage.`,'warn',lid);}
+  return true;
+}
+
+function act(a){
+  if(G.en<=0||G.lives<=0)return;
+  let cd=0;
+
+  if(a===1){ // Plasma Cannon
+    const crit=rnd(1,6)===1;
+    const dmg=crit?rnd(20*G.wpn,40*G.wpn):rnd(8*G.wpn,20*G.wpn);
+    let k=0;
+    for(let i=0;i<G.en;i++) if(rnd(1,G.enHP)<=dmg) k++;
+    if(k===0)k=1; if(k>G.en)k=G.en;
+    G.en-=k; G.kills+=k; G.combo+=k;
+    const bonus=G.combo>=3?G.combo*25:0;
+    G.score+=k*10*G.wave+bonus+(crit?200:0);
+    if(crit){log(`★ CRITICAL HIT! ${dmg} damage! Shot them RIGHT in the lunch box!`,'crit');}
+    else{log(`PLASMA CANNON FIRED! KAPOW! ${dmg} dmg, ${k} unit(s) vaporized.`,'good');}
+    if(k>=5) log(`MASSACRE! ${k} kills! Their families mourn on another planet!`,'good');
+    else if(k>=3) log(`MULTI-KILL! +${k*50} bonus! They didn't see it coming!`,'good');
+    if(G.combo>=3) log(`COMBO x${G.combo}! +${bonus} pts! YOU'RE ON FIRE!`,'crit');
+    if(G.en>0){cd=rnd(1,G.enDmg);shieldHit(cd);}
+    log(taunt(),'funny');
+
+  } else if(a===2){ // Spin Attack
+    const dmg=rnd(0,40*G.wpn);
+    let k=0;
+    if(dmg>15) for(let i=0;i<G.en;i++) if(rnd(1,2)===1) k++;
+    if(k>G.en)k=G.en;
+    G.en-=k; G.kills+=k; G.combo+=k;
+    G.score+=k*10*G.wave;
+    if(dmg===0){log(`SPIN ATTACK! You spun into a wall. An enemy is filming it for AlienTube.`,'bad');G.score=Math.max(0,G.score-5);G.combo=0;}
+    else if(dmg>30){log(`CRITICAL SPIN! ${k} enemies to the shadow realm!`,'good');log(`Their therapist bills AND their HOA fees are YOUR fault.`,'funny');}
+    else{log(`Spin attack! ${dmg} dmg like a confused tornado! ${k} kills!`,'good');}
+    const stun=rnd(1,4)===1;
+    if(stun){log(`STUNNED! Enemies too dizzy to attack!`,'good');}
+    else if(G.en>0){cd=rnd(1,G.enDmg);shieldHit(cd);}
+    log(bob(),'bob');
+
+  } else if(a===3){ // Shields
+    G.shields=Math.min(100,G.shields+25);
+    log(`SHIELD REPAIR! Bob duct-taped the hull. Shields: ${G.shields}/100`,'info');
+    log(`Bob: "Pretty sure this is how shields work." It is not.`,'bob');
+    if(G.en>0){cd=rnd(1,G.enDmg);shieldHit(cd);}
+
+  } else if(a===4){ // Overclock
+    G.wpn++;
+    log(`WEAPON OVERCLOCKED TO LEVEL ${G.wpn}!`,'good');
+    log(`Held together by hope, tape, and Bob's half-eaten sandwich.`,'bob');
+    log(`IT DEFINITELY WON'T EXPLODE. (Bob is sweating.)`,'funny');
+    if(G.en>0){cd=rnd(1,G.enDmg);shieldHit(cd);}
+    log(taunt(),'funny');
+
+  } else if(a===5){ // Dodge
+    G.combo=0;
+    log(`EVASIVE MANEUVERS! Barrel-rolled screaming through the asteroid field.`,'info');
+    log(`Enemies missed! Your dignity did not survive.`,'funny');
+    log(`Bob filed HR complaint #${rnd(7,14)} about the screaming.`,'bob');
+
+  } else if(a===6){ // Call Bob
+    G.combo=0;
+    const roll=rnd(1,10);
+    if(roll===1){
+      G.en=0;G.kills+=G.maxEn;G.score+=2000;
+      log(`=== BOB REPORT ===`,'crit');
+      log(`WHAT HAPPENED : Bob accidentally fired the turbo cannon.`,'default');
+      log(`RESULT        : ALL enemies destroyed! +2000 pts!`,'good');
+      log(`BOB SAYS      : "I meant to do that."`,'bob');
+    } else if(roll===2){
+      G.lives+=2;
+      log(`=== BOB REPORT ===`,'crit');
+      log(`WHAT HAPPENED : Bob found 2 life pods in the storage closet.`,'default');
+      log(`RESULT        : +2 extra lives!`,'good');
+      log(`BOB SAYS      : "They were behind my novelty mug collection."`,'bob');
+    } else if(roll===3){
+      G.shields=100;G.wpn++;
+      log(`=== BOB REPORT ===`,'crit');
+      log(`WHAT HAPPENED : Bob had a moment of pure genius.`,'default');
+      log(`RESULT        : Full shields + weapon level up!`,'good');
+      log(`BOB SAYS      : "I have no idea what I did." (then fell asleep)`,'bob');
+    } else if(roll===4){
+      const sd=rnd(20,40);G.shields=Math.max(0,G.shields-sd);if(G.shields<=0){G.lives--;G.shields=100;}
+      log(`=== BOB REPORT ===`,'crit');
+      log(`WHAT HAPPENED : Bob pressed the wrong button.`,'default');
+      log(`RESULT        : Engines fired sideways. -${sd} shields!`,'bad');
+      log(`BOB SAYS      : "Sorry. That one's on me."`,'bob');
+    } else if(roll===5){
+      G.score+=1500;
+      log(`=== BOB REPORT ===`,'crit');
+      log(`WHAT HAPPENED : Bob sold spare hull plating mid-battle.`,'default');
+      log(`RESULT        : +1500 pts! Ship is slightly smaller now.`,'good');
+      log(`BOB SAYS      : "We weren't using that part anyway."`,'bob');
+    } else if(roll===6){
+      const k=rnd(1,Math.max(1,G.en));G.en-=k;G.kills+=k;G.score+=k*150;
+      log(`=== BOB REPORT ===`,'crit');
+      log(`WHAT HAPPENED : Bob threw his socket wrench at the enemy.`,'default');
+      log(`RESULT        : ${k} enemies knocked out! +${k*150} pts!`,'good');
+      log(`BOB SAYS      : "I want my wrench back."`,'bob');
+    } else if(roll===7){
+      G.shields=Math.max(0,G.shields-15);if(G.shields<=0){G.lives--;G.shields=100;}
+      log(`=== BOB REPORT ===`,'crit');
+      log(`WHAT HAPPENED : Bob dropped the duct tape roll onto the shields.`,'default');
+      log(`RESULT        : -15 shields. Nothing else.`,'bad');
+      log(`BOB SAYS      : "I said sorry like three times already."`,'bob');
+    } else if(roll===8){
+      G.wpn+=2;
+      log(`=== BOB REPORT ===`,'crit');
+      log(`WHAT HAPPENED : Bob double-overclocked the weapon somehow.`,'default');
+      log(`RESULT        : Weapon jumped up 2 levels!`,'good');
+      log(`BOB SAYS      : "I sat on the panel. It worked out."`,'bob');
+    } else if(roll===9){
+      G.score+=3000;
+      log(`=== BOB REPORT ===`,'crit');
+      log(`WHAT HAPPENED : Bob accidentally livestreamed the whole battle.`,'default');
+      log(`RESULT        : 47 million viewers. Sponsorship deal. +3000 pts!`,'good');
+      log(`BOB SAYS      : "I am now an influencer. I hate it."`,'bob');
+    } else {
+      G.en=0;G.kills+=G.maxEn;G.score+=5000;
+      log(`=== BOB REPORT ===`,'crit');
+      log(`WHAT HAPPENED : Bob found a secret button and hit it with his elbow.`,'default');
+      log(`RESULT        : ALL enemies destroyed! +5000 pts! BOB IS LEGENDARY!`,'crit');
+      log(`BOB SAYS      : "What button? I don't see a button."`,'bob');
+    }
+  }
+
+  updateHUD();
+  checkWave();
+}
+
+function checkWave(){
+  if(G.lives<=0){stopTimer();if(G.score>G.hs)G.hs=G.score;save();showOver();return;}
+  if(G.en<=0){
+    log(`WAVE ${G.wave} CLEARED! Outstanding work, Commander.`,'good');
+    setTimeout(()=>{
+      if(G.mode==='arcade'&&G.wave===5){startBoss();}
+      else showUpgrade();
+    },700);
+  }
+}
+
+// ── UPGRADE ─────────────────────────────────────────────────
+function showUpgrade(){
+  const bonus=G.wave*100+G.combo*10;
+  G.score+=bonus;
+  document.getElementById('upg-sum').innerHTML=
+    `Wave ${G.wave} bonus: <span style="color:var(--g)">+${bonus} pts</span><br>
+     Combo bonus: <span style="color:var(--p)">+${G.combo*10} pts (combo: ${G.combo})</span><br>
+     Current score: <span style="color:var(--y)">${G.score}</span><br><br>
+     <span style="color:var(--o)">${bob()}</span>`;
+  document.getElementById('u-life').textContent=`Current: ${G.lives} lives`;
+  document.getElementById('u-wpn').textContent=`Lvl ${G.wpn} → ${G.wpn+1}`;
+  document.getElementById('u-score').textContent=`+${G.wave*200} pts`;
+  show('s-upg');
+}
+
+function upg(c){
+  if(c===1){G.lives++;log('Life added! Bob: "Don\'t waste it like the last one."','good','log-wave');}
+  else if(c===2){G.wpn++;log(`Weapon Lvl ${G.wpn}! Sounds like an angry cat. Normal.`,'good','log-wave');}
+  else if(c===3){G.shields=100;log('Full shields! Bob used an entire roll of duct tape. No regrets.','good','log-wave');}
+  else if(c===4){G.score+=G.wave*200;log(`Score surge! +${G.wave*200} pts! Zorg is furious.`,'good','log-wave');}
+  else if(c===5){
+    const r=rnd(1,8);
+    if(r===1){G.lives+=3;log('MYSTERY BOX: +3 LIVES! Bob found a family pack of life pods!','crit','log-wave');}
+    else if(r===2){G.wpn+=3;log('MYSTERY BOX: WEAPON +3 LEVELS! Bob sat on the overclock panel!','crit','log-wave');}
+    else if(r===3){G.shields=100;G.score+=500;log('MYSTERY BOX: Full shields + 500 pts! Bob had a great day!','crit','log-wave');}
+    else if(r===4){G.score=Math.max(0,G.score-200);log('MYSTERY BOX: Zorg hacked it. -200 pts. Bob is deeply sorry.','bad','log-wave');}
+    else if(r===5){G.lives++;G.wpn++;log('MYSTERY BOX: +1 life AND weapon upgrade! Bob found a 2-for-1 coupon!','crit','log-wave');}
+    else if(r===6){G.score+=2000;log('MYSTERY BOX: +2000 pts! Contains a bearer bond. FROM SPACE.','crit','log-wave');}
+    else if(r===7){G.shields=Math.max(1,G.shields-30);log('MYSTERY BOX: Exploded a little. -30 shields. Bob says "my bad".','bad','log-wave');}
+    else{G.lives+=2;G.score+=1000;G.wpn++;log('MYSTERY BOX JACKPOT! +2 lives, +1000pts, weapon up! BOB IS A GENIUS!','crit','log-wave');}
+  }
+  G.wave++;
+  if(G.mode==='endless'&&G.wave>99){
+    stopTimer();if(G.score>G.hs)G.hs=G.score;save();
+    alert('99 WAVES SURVIVED. YOU ARE NOT HUMAN.\nThe game surrenders.\nBob has fainted.');
+    show('s-title');refreshTitle();return;
+  }
+  G.combo=0;
+  startWave();
+}
+
+// ── BOSS ────────────────────────────────────────────────────
+function startBoss(){
+  G.bMax=500+G.wave*50; G.bHP=G.bMax; G.bPhase=1;
+  document.getElementById('b-enrage').style.display='none';
+  document.getElementById('b-phase3').style.display='none';
+  clearLog('log-boss');
+  log(`FOOLISH HUMAN! I am EMPEROR ZORG THE MILDLY ANNOYED!`,'bad','log-boss');
+  log(`I conquered 47 galaxies, 12 dimensions, 3 Denny's, and one very stubborn IKEA.`,'funny','log-boss');
+  log(`I fly the DREADNOUGHT SUPREME ULTRA OMEGA X (with cupholders AND heated seat).`,'funny','log-boss');
+  log(`My laser socks are named Gerald and Kevin. They are VERY excited.`,'funny','log-boss');
+  log(`...but please try. I skipped leg day for this and I need to justify it.`,'bad','log-boss');
+  updateBossHUD();
+  show('s-boss');
+}
+
+function bShieldHit(dmg){
+  G.shields-=dmg;
+  if(G.shields<0){G.lives--;G.shields=100;log(`SHIELDS BLOWN! Lost a life! Lives: ${G.lives}`,'bad','log-boss');}
+  else{log(`Zorg fires back! ${dmg} shield damage.`,'warn','log-boss');}
+}
+
+function bact(a){
+  if(G.bHP<=0||G.lives<=0)return;
+  const bd=G.bPhase===3?rnd(40,70):G.bPhase===2?rnd(30,55):rnd(18,35);
+
+  if(a===1){
+    const crit=rnd(1,5)===1;
+    const dmg=crit?rnd(60*G.wpn,100*G.wpn):rnd(25*G.wpn,50*G.wpn);
+    G.bHP-=dmg; G.score+=dmg*5;
+    if(crit){log(`★ CRITICAL VOLLEY! Shot Gerald right in the toe! ${dmg} DAMAGE!`,'crit','log-boss');}
+    else{log(`PLASMA VOLLEY! ${dmg} damage! Boss HP: ${Math.max(0,G.bHP)}/${G.bMax}`,'good','log-boss');}
+    if(G.bHP>0) bShieldHit(bd);
+    log(taunt(),'funny','log-boss');
+
+  } else if(a===2){
+    const ch=rnd(1,8);
+    if(ch===1){const d=rnd(80,150);G.bHP-=d;G.score+=1000;log(`PERFECT HIT! ${d} dmg! Shot Gerald AND Kevin simultaneously! +1000 pts!`,'crit','log-boss');log(`Zorg is hopping on zero feet.`,'funny','log-boss');}
+    else if(ch===2){G.bHP-=5;log(`A confused space pigeon hit Zorg for 5 dmg.`,'funny','log-boss');log(`Pigeon is completely fine and smug.`,'funny','log-boss');}
+    else if(ch===3){G.lives++;log(`An extra life pod drifted by! Note: "Good luck! - A random ghost who believes in you"`,'good','log-boss');}
+    else if(ch===4){G.shields=100;log(`Vortex fully repaired shields AND cleaned the windshield.`,'good','log-boss');log(`There was a lot of bug splatter. It's space. Go figure.`,'funny','log-boss');}
+    else if(ch===5){log(`NOTHING. The vortex made a fart noise.`,'bad','log-boss');log(`Zorg laughs so hard Kevin falls off his hand.`,'funny','log-boss');bShieldHit(bd+10);}
+    else if(ch===6){const d=rnd(30,60);G.bHP-=d;G.wpn++;log(`ABSOLUTE CHAOS! ${d} dmg AND weapon upgrade!`,'crit','log-boss');log(`Zorg gives a polite golf clap. Kevin waves.`,'funny','log-boss');}
+    else if(ch===7){G.bHP-=20;G.score+=2000;log(`Vortex revealed Zorg's embarrassing search history!`,'good','log-boss');log(`"how to be less mildly annoyed" "laser sock care instructions" +2000 pts!`,'funny','log-boss');}
+    else{G.lives++;G.wpn++;G.shields=100;log(`TRIPLE CHAOS! Extra life, weapon up, full shields!`,'crit','log-boss');log(`The universe is apologising for earlier.`,'funny','log-boss');}
+    if(G.bHP>0&&ch!==3&&ch!==4&&ch!==8) bShieldHit(bd);
+
+  } else if(a===3){
+    G.shields=Math.min(100,G.shields+30);
+    log(`Emergency repair! Shields: ${G.shields}/100`,'info','log-boss');
+    log(bob(),'bob','log-boss');
+    bShieldHit(bd);
+
+  } else if(a===4){
+    const r=rnd(1,10);
+    if(r===7){G.bHP-=80;log(`ZORG ACCEPTS THE COFFEE! Gets ZOOMIES, blasts own engine for 80 dmg!`,'good','log-boss');log(`Vibrating at bat frequency. Also twice as angry.`,'funny','log-boss');bShieldHit(bd+15);}
+    else if(r<=2){log(`IT WAS DECAF. ZORG CAN TELL. HE IS FILING A FORMAL COMPLAINT.`,'bad','log-boss');log(`He attacks with FURY OF A THOUSAND DECAF HATERS.`,'funny','log-boss');G.shields-=bd*3;if(G.shields<0){G.lives--;G.shields=100;log(`SHIELDS OBLITERATED! Lives: ${G.lives}`,'bad','log-boss');}}
+    else if(r===10){log(`ZORG CRIES INTO THE COFFEE. "Nobody ever brings ME coffee."`,'funny','log-boss');log(`Too sad to attack. +500 sympathy score.`,'good','log-boss');G.score+=500;}
+    else{log(`ZORG DECLINES. "I prefer tea, you uncultured potato in a flight suit!"`,  'bad','log-boss');log(`The coffee floats sadly into the void. It deserved better.`,'funny','log-boss');G.shields-=bd*2;if(G.shields<0){G.lives--;G.shields=100;log(`SHIELDS BLOWN! Lives: ${G.lives}`,'bad','log-boss');}}
+
+  } else if(a===5){ // Deploy Bob at boss
+    const r=rnd(1,6);
+    if(r===1){G.bHP-=200;log(`BOB THREW HIS ENTIRE TOOLKIT AT ZORG'S COCKPIT!`,'crit','log-boss');log(`200 DAMAGE! The socket wrench got him RIGHT in the crown!`,'crit','log-boss');log(`Bob is weaponless but EXTREMELY satisfied.`,'bob','log-boss');}
+    else if(r===2){G.shields=100;G.lives++;log(`Bob spacewalked to Zorg's ship and STOLE HIS LUNCH!`,'good','log-boss');log(`Zorg too hungry to fight. Full shields + extra life!`,'good','log-boss');log(`Bob is eating a space sandwich. It's good.`,'bob','log-boss');}
+    else if(r===3){G.shields=Math.max(0,G.shields-25);if(G.shields<=0){G.lives--;G.shields=100;}log(`Bob tripped over the airlock. -25 shields.`,'bad','log-boss');log(`He is re-duct-taping himself to the outside of the ship.`,'bob','log-boss');}
+    else if(r===4){G.bHP-=150;G.score+=1000;log(`Bob did interpretive dance in the viewport!`,'crit','log-boss');log(`150 dmg while Zorg watched in confused horror! +1000 pts!`,'good','log-boss');log(`Bob takes a bow. Gerald the sock applauds.`,'bob','log-boss');}
+    else if(r===5){G.wpn+=2;log(`Bob found the weapon manual he'd been SITTING ON for 3 waves!`,'crit','log-boss');log(`Weapon +2 levels! Bob: "Oh, THAT'S what that button does."`, 'bob','log-boss');}
+    else{G.bHP=Math.floor(G.bHP/2);log(`BOB HACKED ZORG'S SHIP WITH HIS SANDWICH!`,'crit','log-boss');log(`The mustard shorted the mainframe. BOSS HP HALVED!`,'crit','log-boss');log(`Bob takes full credit. He deserves every bit of it.`,'bob','log-boss');}
+  }
+
+  updateBossHUD();
+  checkBoss();
+}
+
+function checkBoss(){
+  if(G.lives<=0){stopTimer();if(G.score>G.hs)G.hs=G.score;save();showOver();return;}
+  if(G.bHP<=0){
+    stopTimer();
+    G.score+=5000;
+    if(G.score>G.hs)G.hs=G.score;
+    const t=el();
+    if(G.mode==='speedrun'&&t<G.sr)G.sr=t;
+    save();
+    showVictory(t);
+  }
+}
+
+// ── GAME OVER ────────────────────────────────────────────────
+function showOver(){
+  document.getElementById('go-zmsg').textContent='Zorg sent a fruit basket. Note said "L". Gerald and Kevin send their regards.';
+  const nh=G.score>=G.hs&&G.score>0;
+  document.getElementById('go-stats').innerHTML=`
+    <div class="srow"><span class="skey">Final Score</span><span class="sval ${nh?'hi':''}">${G.score}${nh?' ★ NEW RECORD':''}</span></div>
+    <div class="srow"><span class="skey">Waves Survived</span><span class="sval">${G.wave-1}</span></div>
+    <div class="srow"><span class="skey">Total Kills</span><span class="sval">${G.kills}</span></div>
+    <div class="srow"><span class="skey">Best Combo</span><span class="sval purple">${G.combo}</span></div>
+    <div class="srow"><span class="skey">Time Played</span><span class="sval">${ft(el())}</span></div>
+    <div class="srow"><span class="skey">All-Time High Score</span><span class="sval hi">${G.hs}</span></div>
+    <div class="srow"><span class="skey" style="font-size:10px;color:var(--o)">${bob()}</span></div>`;
+  show('s-over');
+}
+
+// ── VICTORY ──────────────────────────────────────────────────
+function showVictory(t){
+  const nh=G.score>=G.hs;
+  const nr=G.mode==='speedrun'&&t<=G.sr;
+  document.getElementById('win-stats').innerHTML=`
+    <div class="srow"><span class="skey">Final Score</span><span class="sval ${nh?'hi':''}">${G.score}${nh?' ★ NEW RECORD':''}</span></div>
+    <div class="srow"><span class="skey">Victory Bonus</span><span class="sval">+5000 pts</span></div>
+    <div class="srow"><span class="skey">Total Kills</span><span class="sval">${G.kills}</span></div>
+    <div class="srow"><span class="skey">Clear Time</span><span class="sval ${nr?'rec':''}">${ft(t)}${nr?' ★ SPEEDRUN RECORD':''}</span></div>
+    <div class="srow"><span class="skey">Weapon Level</span><span class="sval yellow">${G.wpn}</span></div>
+    <div class="srow"><span class="skey" style="font-size:10px;color:var(--dim)">Zorg: "I'll be back. I left Gerald in sector 7."<br>Gerald was recovered. He seemed relieved. Kevin was never found. Pour one out for Kevin.</span></div>
+    <div class="srow"><span class="skey" style="font-size:10px;color:var(--o)">${bob()}</span></div>`;
+  show('s-win');
+}
+
+// ── HOF ───────────────────────────────────────────────────────
+function renderHOF(){
+  document.getElementById('hof-data').innerHTML=`
+    <div class="srow"><span class="skey">All-Time High Score</span><span class="sval hi">${G.hs} pts</span></div>
+    <div class="srow"><span class="skey">Best Speedrun</span><span class="sval rec">${G.sr<99999?ft(G.sr):'No record yet'}</span></div>
+    <div style="margin-top:12px;font-size:10px;color:var(--dim);text-align:center">Can YOU beat these records?<br><br>
+    Gerald the laser sock holds the unofficial record of 0.001s.<br>Kevin the laser sock's record is unknown. Kevin is still missing.</div>`;
+}
+
+// ── EXIT ─────────────────────────────────────────────────────
+function goMenu(){stopTimer();show('s-title');refreshTitle();}
+function exitGame(){
+  if(confirm('ZORG SAYS: "Oh good. I was getting tired anyway. Bye-bye, tiny potato."\n\nSure you want to exit?'))
+    document.body.innerHTML='<div style="display:flex;height:100vh;align-items:center;justify-content:center;font-family:monospace;color:#00ff88;background:#050d12;font-size:16px;text-align:center;padding:20px">Farewell, Commander.<br><br>Bob waves from the hull. He still has the duct tape.<br><br>Kevin was never found. 🧦</div>';
+}
+
+// ── KEYBOARD ─────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  const sc=document.querySelector('.screen.active')?.id;
+  if(sc==='s-wave'){
+    if(e.key==='1')act(1); else if(e.key==='2')act(2); else if(e.key==='3')act(3);
+    else if(e.key==='4')act(4); else if(e.key==='5')act(5); else if(e.key==='6')act(6);
+    else if(e.key==='0')goMenu();
+  } else if(sc==='s-boss'){
+    if(e.key==='1')bact(1); else if(e.key==='2')bact(2); else if(e.key==='3')bact(3);
+    else if(e.key==='4')bact(4); else if(e.key==='5')bact(5); else if(e.key==='0')goMenu();
+  } else if(sc==='s-upg'){
+    if(e.key==='1')upg(1); else if(e.key==='2')upg(2); else if(e.key==='3')upg(3);
+    else if(e.key==='4')upg(4); else if(e.key==='5')upg(5); else if(e.key==='0')goMenu();
+  } else if(sc==='s-title'){
+    if(e.key==='1')selMode('arcade'); else if(e.key==='2')selMode('speedrun');
+    else if(e.key==='3')selMode('endless'); else if(e.key==='4')show('s-hof');
+    else if(e.key==='5')exitGame();
+  }
+});
+
+// ── INIT ─────────────────────────────────────────────────────
+load(); refreshTitle();
+</script>
+</body>
+</html>
